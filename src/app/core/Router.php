@@ -55,7 +55,8 @@ class Router
         }
 
         if (isset($this->rotas[$method][$uri])) {
-            call_user_func($this->rotas[$method][$uri]);
+            [$class, $action] = $this->rotas[$method][$uri];
+            call_user_func([new $class(), $action]);
             return;
         }
 
