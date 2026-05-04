@@ -42,16 +42,22 @@ class UserModel
 
     public function update($id, $data)
     {
+
+        $user = $this->findById($id);
+        if (!$user)
+            return false;
         $stmt = $this->pdo->prepare(
             'UPDATE users SET name = ?, phone = ?, bio = ? WHERE id = ?'
         );
 
         $stmt->execute([
-            $data['name'],
-            $data['phone'] ?? null,
-            $data['bio'] ?? null,
+            $data['name'] ?? $user['name'],
+            $data['phone'] ?? $user['phone'],
+            $data['bio'] ?? $user['bio'],
             $id
         ]);
+
+        return true;
     }
 
     public function delete($id)

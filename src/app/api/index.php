@@ -10,6 +10,7 @@ require_once __DIR__ . "/../model/UserModel.php";
 //
 
 require_once __DIR__ . "/../middleware/ValidationMiddleware.php";
+require_once __DIR__ . "/../middleware/AuthMiddleware.php";
 require_once __DIR__ . "/../controller/UserController.php";
 
 $router = new Router();
@@ -17,5 +18,6 @@ $router = new Router();
 $router->post('/user/register', [UserController::class, 'register']);
 $router->post('/user/index', [UserController::class, 'index']);
 $router->get('/user/{id}', [UserController::class, 'show']);
+$router->post('/user/update/{id}', [UserController::class, 'update']);
 
 $router->run();
