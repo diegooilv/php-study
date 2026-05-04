@@ -19,7 +19,7 @@ $router = new Router();
 $router->post('/user/register', [UserController::class, 'register']);
 $router->post('/user/index', [UserController::class, 'index']);
 $router->get('/user/{id}', [UserController::class, 'show']);
-$router->post('/user/update/{id}', [UserController::class, 'update']);
+$router->patch('/user/update/{id}', [UserController::class, 'update']);
 $router->post('/user/login', [UserController::class, 'login']);
 
 $router->run();
