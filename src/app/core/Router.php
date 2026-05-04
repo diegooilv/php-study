@@ -60,6 +60,18 @@ class Router
             return;
         }
 
+        // dynamic routes
+        foreach ($this->rotas[$method] ?? [] as $path => $callback) {
+            // regex from the internet
+            $pattern = preg_replace('/\{[^}]+\}/', '([^/]+)', $path);
+            if (preg_match('#^' . $pattern . '$#', $uri, $matches)) {
+                array_shift($matches);
+                [$class, $action] = $callback;
+                call_user_func([new $class(), $action], ...$matches);
+                return;
+            }
+        }
+
         $response = new Response();
         $response->json([
             "erro" => "Rota não encontrada"
