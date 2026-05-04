@@ -61,6 +61,30 @@ class UserController
             Response::json(['erro' => 'Erro interno'], 500);
         }
     }
+    public function patch($id)
+    {
+        try {
+            $body = json_decode(file_get_contents('php://input'), true);
+
+            $row = AuthMiddleware::handle();
+            if ($row['user_id'] != $id) {
+                Response::json(['erro' => 'Você não é esse usuário!'], 403);
+            }
+
+            $userModel = new UserModel();
+            $status = $userModel->update($id, $body);
+            if ($status) {
+                Response::json(['status' => 'Usuário Atualizado!'], 200);
+            } else {
+                Response::json(['erro' => 'ID Inválido!'], 404);
+            }
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            Response::json(['erro' => 'Erro interno'], 500);
+        }
+    }
+
     public function update($id)
     {
         try {
@@ -70,6 +94,11 @@ class UserController
             if ($row['user_id'] != $id) {
                 Response::json(['erro' => 'Você não é esse usuário!'], 403);
             }
+
+            ValidationMiddleware::required(
+                $body,
+                ['name', 'phone', 'bio']
+            );
 
             $userModel = new UserModel();
             $status = $userModel->update($id, $body);
