@@ -84,4 +84,30 @@ class UserController
             Response::json(['erro' => 'Erro interno'], 500);
         }
     }
+
+    public function login()
+    {
+        try {
+            $body = json_decode(file_get_contents('php://input'), true);
+
+            ValidationMiddleware::required($body, ['email', 'password']);
+            $userModel = new UserModel();
+            $user = $userModel->findByEmail($body['email']);
+            if (!$user) {
+                Response::json(['erro' => 'Email Inválido!'], 404);
+            }
+
+            if (!password_verify($body['password'], $user['password'])) {
+                Response::json(['erro' => 'Acesso Não Autorizado!'], 401);
+            }
+
+            $tokenModel = new TokenModel();
+            $token = $tokenModel->create($user['id']);
+            Response::json(['token' => $token], 200);
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            Response::json(['erro' => 'Erro interno'], 500);
+        }
+    }
 }
