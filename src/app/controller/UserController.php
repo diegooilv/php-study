@@ -30,10 +30,8 @@ class UserController
     public function index()
     {
         try {
-            $body = json_decode(file_get_contents('php://input'), true);
-            ValidationMiddleware::required($body, ['admin']);
-            // temporary
-            if ($body['admin'] !== 'diegooilv') {
+            $row = AuthMiddleware::admin();
+            if (!$row) {
                 Response::json(['erro' => 'Acesso Negado!'], 403);
             }
 
