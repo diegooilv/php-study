@@ -59,4 +59,10 @@ class UserModel
         $stmt = $this->pdo->prepare('DELETE FROM users WHERE id = ?');
         $stmt->execute([$id]);
     }
+
+    public function index()
+    {
+        $stmt = $this->pdo->query('SELECT * FROM users');
+        return $stmt->fetchAll();
+    }
 }

@@ -15,5 +15,6 @@ require_once __DIR__ . "/../controller/UserController.php";
 $router = new Router();
 
 $router->post('/user/register', [UserController::class, 'register']);
+$router->post('/user/index', [UserController::class, 'index']);
 
 $router->run();
