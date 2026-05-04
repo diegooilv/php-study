@@ -7,6 +7,7 @@ CREATE TABLE users (
 
     phone VARCHAR(20),
     bio TEXT,
+    role ENUM('user', 'admin') DEFAULT 'user',
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
