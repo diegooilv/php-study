@@ -5,10 +5,10 @@ class AuthMiddleware
     public static function handle()
     {
         try {
-            $header = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
-
+            $headers = getallheaders();
+            $header = $headers['Authorization'] ?? $headers['authorization'] ?? null;
             if (!$header) {
-                Response::json(['erro' => 'Acesso não autorizado'], 401);
+                Response::json(['erro' => 'Acesso não autorizadoa'], 401);
             }
             $token = str_replace('Bearer ', '', $header);
 
@@ -35,7 +35,9 @@ class AuthMiddleware
     public static function admin()
     {
         $row = self::handle();
-        if ($row['role'] !== 'admin') {
+        $userModel = new UserModel();
+        $user = $userModel->findById($row['user_id']);
+        if ($user['role'] !== 'admin') {
             Response::json(['erro' => 'Acesso não autorizado'], 403);
         }
 

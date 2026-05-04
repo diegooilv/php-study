@@ -37,6 +37,9 @@ class UserController
 
             $userModel = new UserModel();
             $users = $userModel->index();
+            foreach ($users as &$user) {
+                unset($user['password']);
+            }
             Response::json($users, 200);
         } catch (Exception $e) {
             error_log($e->getMessage());
@@ -50,8 +53,18 @@ class UserController
             $userModel = new UserModel();
             $user = $userModel->findById($id);
             if (!$user) {
-                Response::json(['erro' => 'ID Inválido!'], 404);
+                Response::json(['erro' => 'Usuário não encontrado'], 404);
             }
+            $userRequest = AuthMiddleware::handle();
+            $userRequest = $userModel->findById($userRequest['user_id']) ?? null;
+
+            $isOwner = $user['id'] == ($userRequest['id'] ?? null);
+            $isAdmin = ($userRequest['role'] ?? null) === 'admin';
+
+            if (!$isOwner && !$isAdmin) {
+                Response::json(['erro' => 'Acesso Negado!'], 403);
+            }
+            unset($user['password']);
             Response::json($user, 200);
 
         } catch (Exception $e) {
