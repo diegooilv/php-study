@@ -150,4 +150,18 @@ class UserController
             Response::json(['erro' => 'Erro interno'], 500);
         }
     }
+
+    public function logout()
+    {
+        try {
+            $row = AuthMiddleware::handle();
+            $tokenModel = new TokenModel();
+            $tokenModel->deleteByToken($row['token']);
+            Response::json(['status' => 'Sucesso'], 200);
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            Response::json(['erro' => 'Erro interno'], 500);
+        }
+    }
 }

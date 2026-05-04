@@ -22,5 +22,6 @@ $router->get('/user/{id}', [UserController::class, 'show']);
 $router->patch('/user/update/{id}', [UserController::class, 'patch']);
 $router->put('/user/update/{id}', [UserController::class, 'update']);
 $router->post('/user/login', [UserController::class, 'login']);
+$router->post('/user/logout', [UserController::class, 'logout']);
 
 $router->run();
