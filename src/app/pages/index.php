@@ -1,3 +1,4 @@
 <?php
 
-echo "Página Inicial";
+// temporary
+header('Location: /login');
