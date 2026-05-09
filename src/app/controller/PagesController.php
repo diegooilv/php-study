@@ -20,7 +20,6 @@ class PagesController
     {
         try {
             $body = $_POST;
-            ValidationMiddleware::required($body, ['email', 'password']);
             $userModel = new UserModel();
             $user = $userModel->findByEmail($body['email']);
             if (!$user) {
@@ -66,6 +65,34 @@ class PagesController
             error_log($e->getMessage());
             header('Location: /login');
             exit();
+        }
+    }
+
+    public static function register()
+    {
+        try {
+            $body = $_POST;
+            $userModel = new UserModel();
+            $exists = $userModel->findByEmail($body['email']);
+
+            if ($exists) {
+                header('Location: /error?code=409&msg=Email já em uso.');
+                exit;
+            }
+
+            $user = $userModel->create($body);
+            $tokenModel = new TokenModel();
+            $token = $tokenModel->create($user);
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['userToken'] = $token;
+            header('Location: /dashboard');
+            exit;
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            Response::internalError();
         }
     }
 }

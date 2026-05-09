@@ -5,6 +5,9 @@ class PagesMiddleware
     public static function auth()
     {
         try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $token = $_SESSION['userToken'] ?? null;
             if (!$token) {
                 header('Location: /login');
